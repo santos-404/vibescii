@@ -366,9 +366,6 @@ export default function AsciiGenerator() {
         </Tabs>
       </main>
 
-      <footer className="border-t border-gray-800 p-4 text-center text-sm text-gray-500">
-        <p>Modern ASCII Art Generator &copy; {new Date().getFullYear()}</p>
-      </footer>
 
       <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
         <DialogContent className="bg-gray-950 border-gray-800">
