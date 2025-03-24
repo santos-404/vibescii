@@ -31,6 +31,7 @@ export default function AsciiGenerator() {
   const [activeTab, setActiveTab] = useState("image")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [hasOpenedSettings, setHasOpenedSettings] = useState(false)
 
   const charSets = {
     standard: "@%#*+=-:. ",
@@ -215,10 +216,24 @@ export default function AsciiGenerator() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out rounded-xl" />
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out rounded-xl" />
             </button>
-            <Sheet>
+            <Sheet onOpenChange={(open) => {
+              if (open) setHasOpenedSettings(true)
+            }}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-purple-500/10">
-                  <Settings className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="hover:bg-purple-500/10 relative group">
+                  <div className="relative">
+                    <Settings className="h-5 w-5 transition-all duration-500 group-hover:rotate-180 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                  {!hasOpenedSettings && (
+                    <>
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-ping" />
+                    </>
+                  )}
+                  <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-xs text-gray-300 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-800">
+                    Customize chars
+                  </div>
                 </Button>
               </SheetTrigger>
               <SheetContent className="bg-gray-950 border-gray-800">
