@@ -40,6 +40,20 @@ export default function AsciiGenerator() {
     binary: "10 ",
   }
 
+  const resetState = () => {
+    setAsciiOutput("")
+    setText("")
+    setImagePreview(null)
+    setDensity(1)
+    setInverted(false)
+    setCharSet("standard")
+    setDownloadFilename("ascii-art.txt")
+    setIsDragging(false)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value)
     convertTextToAscii(e.target.value)
@@ -188,237 +202,244 @@ export default function AsciiGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white flex flex-col">
-      <header className="border-b border-gray-800/50 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/20">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient">
-            vibescii
-          </h1>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-purple-500/10">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="bg-gray-950 border-gray-800">
-              <SheetHeader>
-                <SheetTitle className="text-white">Settings</SheetTitle>
-                <SheetDescription>Customize your ASCII art generation</SheetDescription>
-              </SheetHeader>
-              <div className="grid gap-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="density">Density</Label>
-                  <Slider
-                    id="density"
-                    min={0.5}
-                    max={3}
-                    step={0.1}
-                    value={[density]}
-                    onValueChange={(value) => setDensity(value[0])}
-                  />
-                  <div className="text-xs text-gray-400">{density.toFixed(1)} (Lower = More detail)</div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="inverted">Invert Colors</Label>
-                  <Switch id="inverted" checked={inverted} onCheckedChange={setInverted} />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="charset">Character Set</Label>
-                  <Select value={charSet} onValueChange={setCharSet}>
-                    <SelectTrigger id="charset">
-                      <SelectValue placeholder="Select character set" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="standard">Standard</SelectItem>
-                      <SelectItem value="detailed">Detailed</SelectItem>
-                      <SelectItem value="simple">Simple</SelectItem>
-                      <SelectItem value="blocks">Blocks</SelectItem>
-                      <SelectItem value="binary">Binary</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </header>
-
-      <main className="flex-1 container mx-auto p-4">
-        <Tabs defaultValue="text" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 mb-8 gap-2 bg-transparent relative p-1 rounded-xl">
-            <div 
-              className="absolute inset-0 flex transition-all duration-500 ease-out" 
-              style={{ 
-                width: 'calc(50% - 0.5rem)', 
-                transform: `translateX(${activeTab === 'text' ? '0' : 'calc(100% + 0.5rem)'})`,
-                margin: '0.25rem'
-              }}
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white overflow-auto">
+      <div className="relative min-h-screen flex flex-col">
+        <header className="border-b border-gray-800/50 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/20 sticky top-0 z-50">
+          <div className="container mx-auto flex justify-between items-center">
+            <button
+              onClick={resetState}
+              className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient hover:scale-105 transition-transform duration-300 hover:opacity-80 active:scale-95"
             >
-              <div className="w-full h-full bg-gradient-to-r from-purple-500/40 via-pink-500/40 to-purple-500/40 rounded-lg" />
-            </div>
-            <TabsTrigger 
-              value="text" 
-              className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
-            >
-              <div className="relative">
-                <Type className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
-                <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
-              </div>
-              <span className="relative">
-                Text to ASCII
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
-              </span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="image" 
-              className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
-            >
-              <div className="relative">
-                <ImageIcon className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
-                <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
-              </div>
-              <span className="relative">
-                Image to ASCII
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
-              </span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="text" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 items-start">
-              <div className="space-y-2 min-h-[32px]">
-                <div className="min-h-[32px] flex items-center">
-                  <Label htmlFor="input-text">Input Text</Label>
-                </div>
-                <Textarea
-                  id="input-text"
-                  placeholder="Type something here..."
-                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50 focus:border-purple-500/50 transition-colors"
-                  value={text}
-                  onChange={handleTextChange}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center min-h-[32px]">
-                  <Label htmlFor="output-ascii">ASCII Output</Label>
-                  <div className="space-x-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={handleCopy} 
-                      disabled={!asciiOutput}
-                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                    >
-                      <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                      Copy
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={handleDownload} 
-                      disabled={!asciiOutput}
-                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                    >
-                      <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                      Download
-                    </Button>
-                  </div>
-                </div>
-                <Textarea
-                  id="output-ascii"
-                  readOnly
-                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
-                  value={asciiOutput}
-                />
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="image" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="min-h-[32px] flex items-center">
-                    <Label>Upload Image</Label>
-                  </div>
-                  <div
-                    className={cn(
-                      "flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 cursor-pointer hover:bg-gray-900/30 transition-colors backdrop-blur-sm",
-                      isDragging ? "border-purple-500 bg-purple-500/10" : "border-gray-700",
-                    )}
-                    onClick={triggerFileInput}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
-                    <Input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
-                    <Upload className="h-8 w-8 mb-4 text-gray-500" />
-                    <p className="text-sm text-gray-400">Click to upload or drag and drop</p>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
-                  </div>
-                </div>
-
-                {imagePreview && (
+              vibescii
+            </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="hover:bg-purple-500/10">
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="bg-gray-950 border-gray-800">
+                <SheetHeader>
+                  <SheetTitle className="text-white">Settings</SheetTitle>
+                  <SheetDescription>Customize your ASCII art generation</SheetDescription>
+                </SheetHeader>
+                <div className="grid gap-4 py-4">
                   <div className="space-y-2">
-                    <Label>Preview</Label>
-                    <div className="border border-gray-800 rounded-lg overflow-hidden">
-                      <img
-                        src={imagePreview || "/placeholder.svg"}
-                        alt="Preview"
-                        className="max-h-64 mx-auto object-contain"
-                      />
+                    <Label htmlFor="density">Density</Label>
+                    <Slider
+                      id="density"
+                      min={0.5}
+                      max={3}
+                      step={0.1}
+                      value={[density]}
+                      onValueChange={(value) => setDensity(value[0])}
+                    />
+                    <div className="text-xs text-gray-400">{density.toFixed(1)} (Lower = More detail)</div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="inverted">Invert Colors</Label>
+                    <Switch id="inverted" checked={inverted} onCheckedChange={setInverted} />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="charset">Character Set</Label>
+                    <Select value={charSet} onValueChange={setCharSet}>
+                      <SelectTrigger id="charset">
+                        <SelectValue placeholder="Select character set" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="standard">Standard</SelectItem>
+                        <SelectItem value="detailed">Detailed</SelectItem>
+                        <SelectItem value="simple">Simple</SelectItem>
+                        <SelectItem value="blocks">Blocks</SelectItem>
+                        <SelectItem value="binary">Binary</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </header>
+
+        <main className="container mx-auto p-4 pb-24 flex-1">
+          <Tabs defaultValue="text" className="w-full" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 mb-8 gap-2 bg-transparent relative p-1 rounded-xl">
+              <div 
+                className="absolute inset-0 flex transition-all duration-500 ease-out" 
+                style={{ 
+                  width: 'calc(50% - 0.5rem)', 
+                  transform: `translateX(${activeTab === 'text' ? '0' : 'calc(100% + 0.5rem)'})`,
+                  margin: '0.125rem',
+                  height: 'calc(100% - 0.125rem)'
+                }}
+              >
+                <div className="w-full h-full bg-gradient-to-r from-purple-500/40 via-pink-500/40 to-purple-500/40 rounded-lg" />
+              </div>
+              <TabsTrigger 
+                value="text" 
+                className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
+              >
+                <div className="relative">
+                  <Type className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
+                  <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+                </div>
+                <span className="relative">
+                  Text to ASCII
+                  <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
+                </span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="image" 
+                className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
+              >
+                <div className="relative">
+                  <ImageIcon className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
+                  <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+                </div>
+                <span className="relative">
+                  Image to ASCII
+                  <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
+                </span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="text" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2 items-start">
+                <div className="space-y-2 min-h-[32px]">
+                  <div className="min-h-[32px] flex items-center">
+                    <Label htmlFor="input-text">Input Text</Label>
+                  </div>
+                  <Textarea
+                    id="input-text"
+                    placeholder="Type something here..."
+                    className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50 focus:border-purple-500/50 transition-colors"
+                    value={text}
+                    onChange={handleTextChange}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center min-h-[32px]">
+                    <Label htmlFor="output-ascii">ASCII Output</Label>
+                    <div className="space-x-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleCopy} 
+                        disabled={!asciiOutput}
+                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                      >
+                        <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                        Copy
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleDownload} 
+                        disabled={!asciiOutput}
+                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                      >
+                        <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                        Download
+                      </Button>
                     </div>
                   </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center min-h-[32px]">
-                  <Label htmlFor="output-ascii-image">ASCII Output</Label>
-                  <div className="space-x-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={handleCopy} 
-                      disabled={!asciiOutput}
-                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                    >
-                      <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                      Copy
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={handleDownload} 
-                      disabled={!asciiOutput}
-                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                    >
-                      <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                      Download
-                    </Button>
-                  </div>
+                  <Textarea
+                    id="output-ascii"
+                    readOnly
+                    className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
+                    value={asciiOutput}
+                  />
                 </div>
-                <Textarea
-                  id="output-ascii-image"
-                  readOnly
-                  className="h-64 font-mono text-xs bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
-                  value={asciiOutput}
-                />
               </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </main>
+            </TabsContent>
 
+            <TabsContent value="image" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="min-h-[32px] flex items-center">
+                      <Label>Upload Image</Label>
+                    </div>
+                    <div
+                      className={cn(
+                        "flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 cursor-pointer hover:bg-gray-900/30 transition-colors backdrop-blur-sm",
+                        isDragging ? "border-purple-500 bg-purple-500/10" : "border-gray-700",
+                      )}
+                      onClick={triggerFileInput}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                    >
+                      <Input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                      <Upload className="h-8 w-8 mb-4 text-gray-500" />
+                      <p className="text-sm text-gray-400">Click to upload or drag and drop</p>
+                      <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+                    </div>
+                  </div>
+
+                  {imagePreview && (
+                    <div className="space-y-2">
+                      <Label>Preview</Label>
+                      <div className="border border-gray-800 rounded-lg overflow-hidden">
+                        <img
+                          src={imagePreview || "/placeholder.svg"}
+                          alt="Preview"
+                          className="max-h-64 mx-auto object-contain"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center min-h-[32px]">
+                    <Label htmlFor="output-ascii-image">ASCII Output</Label>
+                    <div className="space-x-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleCopy} 
+                        disabled={!asciiOutput}
+                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                      >
+                        <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                        Copy
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleDownload} 
+                        disabled={!asciiOutput}
+                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                      >
+                        <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                        Download
+                      </Button>
+                    </div>
+                  </div>
+                  <Textarea
+                    id="output-ascii-image"
+                    readOnly
+                    className="h-64 font-mono text-xs bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
+                    value={asciiOutput}
+                  />
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </main>
+
+        <Toaster />
+      </div>
 
       <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
         <DialogContent className="bg-gray-950 border-gray-800">
@@ -444,8 +465,6 @@ export default function AsciiGenerator() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <Toaster />
     </div>
   )
 }
