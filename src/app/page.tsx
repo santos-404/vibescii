@@ -28,6 +28,7 @@ export default function AsciiGenerator() {
   const [charSet, setCharSet] = useState("standard")
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
   const [downloadFilename, setDownloadFilename] = useState("ascii-art.txt")
+  const [activeTab, setActiveTab] = useState("text")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -187,15 +188,15 @@ export default function AsciiGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-      <header className="border-b border-gray-800 p-4 min-h-[72px] flex items-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white flex flex-col">
+      <header className="border-b border-gray-800/50 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/20">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-            ASCII Generator
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient">
+            vibescii
           </h1>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="hover:bg-purple-500/10">
                 <Settings className="h-5 w-5" />
               </Button>
             </SheetTrigger>
@@ -245,15 +246,43 @@ export default function AsciiGenerator() {
       </header>
 
       <main className="flex-1 container mx-auto p-4">
-        <Tabs defaultValue="text" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 gap-4">
-            <TabsTrigger value="text" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-200 cursor-pointer">
-              <Type className="h-4 w-4" />
-              Text to ASCII
+        <Tabs defaultValue="text" className="w-full" onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2 mb-8 gap-2 bg-transparent relative p-1 rounded-xl">
+            <div 
+              className="absolute inset-0 flex transition-all duration-500 ease-out" 
+              style={{ 
+                width: 'calc(50% - 0.5rem)', 
+                transform: `translateX(${activeTab === 'text' ? '0' : 'calc(100% + 0.5rem)'})`,
+                margin: '0.25rem'
+              }}
+            >
+              <div className="w-full h-full bg-gradient-to-r from-purple-500/40 via-pink-500/40 to-purple-500/40 rounded-lg" />
+            </div>
+            <TabsTrigger 
+              value="text" 
+              className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
+            >
+              <div className="relative">
+                <Type className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
+                <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+              </div>
+              <span className="relative">
+                Text to ASCII
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
+              </span>
             </TabsTrigger>
-            <TabsTrigger value="image" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-200 cursor-pointer">
-              <ImageIcon className="h-4 w-4" />
-              Image to ASCII
+            <TabsTrigger 
+              value="image" 
+              className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
+            >
+              <div className="relative">
+                <ImageIcon className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
+                <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+              </div>
+              <span className="relative">
+                Image to ASCII
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
+              </span>
             </TabsTrigger>
           </TabsList>
 
@@ -266,7 +295,7 @@ export default function AsciiGenerator() {
                 <Textarea
                   id="input-text"
                   placeholder="Type something here..."
-                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900 border-gray-800"
+                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50 focus:border-purple-500/50 transition-colors"
                   value={text}
                   onChange={handleTextChange}
                 />
@@ -276,12 +305,24 @@ export default function AsciiGenerator() {
                 <div className="flex justify-between items-center min-h-[32px]">
                   <Label htmlFor="output-ascii">ASCII Output</Label>
                   <div className="space-x-2">
-                    <Button variant="outline" size="sm" onClick={handleCopy} disabled={!asciiOutput}>
-                      <Copy className="h-4 w-4 mr-2" />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleCopy} 
+                      disabled={!asciiOutput}
+                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                    >
+                      <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                       Copy
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleDownload} disabled={!asciiOutput}>
-                      <Download className="h-4 w-4 mr-2" />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleDownload} 
+                      disabled={!asciiOutput}
+                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                    >
+                      <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                       Download
                     </Button>
                   </div>
@@ -289,7 +330,7 @@ export default function AsciiGenerator() {
                 <Textarea
                   id="output-ascii"
                   readOnly
-                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900 border-gray-800"
+                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
                   value={asciiOutput}
                 />
               </div>
@@ -305,8 +346,8 @@ export default function AsciiGenerator() {
                   </div>
                   <div
                     className={cn(
-                      "flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 cursor-pointer hover:bg-gray-900/50 transition-colors",
-                      isDragging ? "border-purple-500 bg-gray-900/50" : "border-gray-700",
+                      "flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 cursor-pointer hover:bg-gray-900/30 transition-colors backdrop-blur-sm",
+                      isDragging ? "border-purple-500 bg-purple-500/10" : "border-gray-700",
                     )}
                     onClick={triggerFileInput}
                     onDragOver={handleDragOver}
@@ -344,12 +385,24 @@ export default function AsciiGenerator() {
                 <div className="flex justify-between items-center min-h-[32px]">
                   <Label htmlFor="output-ascii-image">ASCII Output</Label>
                   <div className="space-x-2">
-                    <Button variant="outline" size="sm" onClick={handleCopy} disabled={!asciiOutput}>
-                      <Copy className="h-4 w-4 mr-2" />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleCopy} 
+                      disabled={!asciiOutput}
+                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                    >
+                      <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                       Copy
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleDownload} disabled={!asciiOutput}>
-                      <Download className="h-4 w-4 mr-2" />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleDownload} 
+                      disabled={!asciiOutput}
+                      className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                    >
+                      <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                       Download
                     </Button>
                   </div>
@@ -357,7 +410,7 @@ export default function AsciiGenerator() {
                 <Textarea
                   id="output-ascii-image"
                   readOnly
-                  className="h-64 font-mono text-xs bg-gray-900 border-gray-800"
+                  className="h-64 font-mono text-xs bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
                   value={asciiOutput}
                 />
               </div>
