@@ -140,7 +140,7 @@ export default function AsciiGenerator() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
-      <header className="border-b border-gray-800 p-4">
+      <header className="border-b border-gray-800 p-4 min-h-[72px] flex items-center">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
             ASCII Generator
@@ -198,32 +198,34 @@ export default function AsciiGenerator() {
 
       <main className="flex-1 container mx-auto p-4">
         <Tabs defaultValue="text" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="text" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 mb-8 gap-4">
+            <TabsTrigger value="text" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-200 cursor-pointer">
               <Type className="h-4 w-4" />
               Text to ASCII
             </TabsTrigger>
-            <TabsTrigger value="image" className="flex items-center gap-2">
+            <TabsTrigger value="image" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-200 cursor-pointer">
               <ImageIcon className="h-4 w-4" />
               Image to ASCII
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="text" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="input-text">Input Text</Label>
+            <div className="grid gap-4 md:grid-cols-2 items-start">
+              <div className="space-y-2 min-h-[32px]">
+                <div className="min-h-[32px] flex items-center">
+                  <Label htmlFor="input-text">Input Text</Label>
+                </div>
                 <Textarea
                   id="input-text"
                   placeholder="Type something here..."
-                  className="h-64 bg-gray-900 border-gray-800"
+                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900 border-gray-800"
                   value={text}
                   onChange={handleTextChange}
                 />
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center min-h-[32px]">
                   <Label htmlFor="output-ascii">ASCII Output</Label>
                   <div className="space-x-2">
                     <Button variant="outline" size="sm" onClick={handleCopy} disabled={!asciiOutput}>
@@ -236,14 +238,12 @@ export default function AsciiGenerator() {
                     </Button>
                   </div>
                 </div>
-                <div className="relative">
-                  <Textarea
-                    id="output-ascii"
-                    readOnly
-                    className="h-64 font-mono text-xs bg-gray-900 border-gray-800"
-                    value={asciiOutput}
-                  />
-                </div>
+                <Textarea
+                  id="output-ascii"
+                  readOnly
+                  className="h-64 font-mono text-xs leading-[1.2] bg-gray-900 border-gray-800"
+                  value={asciiOutput}
+                />
               </div>
             </div>
           </TabsContent>
@@ -252,7 +252,9 @@ export default function AsciiGenerator() {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Upload Image</Label>
+                  <div className="min-h-[32px] flex items-center">
+                    <Label>Upload Image</Label>
+                  </div>
                   <div
                     className="flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg p-12 cursor-pointer hover:bg-gray-900/50 transition-colors"
                     onClick={triggerFileInput}
@@ -285,7 +287,7 @@ export default function AsciiGenerator() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center min-h-[32px]">
                   <Label htmlFor="output-ascii-image">ASCII Output</Label>
                   <div className="space-x-2">
                     <Button variant="outline" size="sm" onClick={handleCopy} disabled={!asciiOutput}>
