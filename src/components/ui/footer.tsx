@@ -5,9 +5,9 @@ export function Footer() {
   return (
     <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-zinc-950/80 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
           {/* Social Links */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-center sm:justify-start">
             <Link
               href="https://github.com/santos-404"
               target="_blank"
@@ -30,7 +30,7 @@ export function Footer() {
                 Twitter - javierrsantoss
               </span>
             </Link>
-            <span className="text-zinc-600">|</span>
+            <span className="text-zinc-600 inline">|</span>
             <Link
               href="https://instagram.com/darioordgz"
               target="_blank"
@@ -56,7 +56,7 @@ export function Footer() {
           </div>
 
           {/* Credits */}
-          <div className="flex items-center gap-2 text-xs text-zinc-400">
+          <div className="flex items-center gap-2 text-xs text-zinc-400 flex-wrap justify-center sm:justify-end">
             <span>Built with {"<3"} by</span>
             <Link
               href="https://github.com/santos-404"
@@ -75,7 +75,7 @@ export function Footer() {
             >
               darrodsas
             </Link>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <Link
               href="https://github.com/santos-404/vibescii"
               target="_blank"
