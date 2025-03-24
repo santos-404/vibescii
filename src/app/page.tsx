@@ -210,9 +210,9 @@ export default function AsciiGenerator() {
           <div className="container mx-auto flex justify-between items-center">
             <button
               onClick={resetState}
-              className="relative text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient hover:scale-105 transition-all duration-300 hover:opacity-80 active:scale-95 overflow-hidden group px-4 py-2 rounded-xl border border-transparent hover:border-purple-500/20 cursor-pointer"
+              className="relative text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient hover:scale-105 transition-all duration-300 hover:opacity-80 active:scale-95 overflow-hidden group px-4 py-2 rounded-xl border border-transparent hover:border-purple-500/20 cursor-pointer [background-size:200%_auto]"
             >
-              <span className="relative z-10">vibescii</span>
+              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400">vibescii</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out rounded-xl" />
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out rounded-xl" />
