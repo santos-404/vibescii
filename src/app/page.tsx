@@ -17,7 +17,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { toast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import Image from "next/image"
 
 export default function AsciiGenerator() {
   const [asciiOutput, setAsciiOutput] = useState("")
@@ -90,7 +91,7 @@ export default function AsciiGenerator() {
 
     const reader = new FileReader()
     reader.onload = (event) => {
-      const img = new Image()
+      const img = new window.Image()
       img.crossOrigin = "anonymous"
       img.onload = () => {
         const canvas = document.createElement("canvas")
@@ -191,7 +192,7 @@ export default function AsciiGenerator() {
         const dataTransfer = new DataTransfer()
         dataTransfer.items.add(imageFile)
         input.files = dataTransfer.files
-        handleImageUpload({ target: { files: dataTransfer.files } } as any)
+        handleImageUpload({ target: { files: dataTransfer.files } } as ChangeEvent<HTMLInputElement>)
       }
     } else {
       toast({
@@ -354,15 +355,15 @@ export default function AsciiGenerator() {
                   </div>
 
                   {imagePreview && (
-                    <div className="space-y-2">
-                      <Label>Preview</Label>
-                      <div className="border border-gray-800 rounded-lg overflow-hidden">
-                        <img
-                          src={imagePreview || "/placeholder.svg"}
-                          alt="Preview"
-                          className="max-h-64 mx-auto object-contain"
-                        />
-                      </div>
+                    <div className="relative w-full h-48">
+                      <Image
+                        src={imagePreview}
+                        alt="Preview"
+                        width={400}
+                        height={300}
+                        className="object-contain"
+                        priority
+                      />
                     </div>
                   )}
                 </div>
