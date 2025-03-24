@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useRef, type ChangeEvent } from "react"
 import { Upload, Download, Copy, Settings, ImageIcon, Type } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -28,6 +29,7 @@ export default function AsciiGenerator() {
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
   const [downloadFilename, setDownloadFilename] = useState("ascii-art.txt")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
 
   const charSets = {
     standard: "@%#*+=-:. ",
@@ -145,6 +147,43 @@ export default function AsciiGenerator() {
 
   const triggerFileInput = () => {
     fileInputRef.current?.click()
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    const files = Array.from(e.dataTransfer.files)
+    const imageFile = files.find(file => file.type.startsWith('image/'))
+    
+    if (imageFile) {
+      const input = fileInputRef.current
+      if (input) {
+        const dataTransfer = new DataTransfer()
+        dataTransfer.items.add(imageFile)
+        input.files = dataTransfer.files
+        handleImageUpload({ target: { files: dataTransfer.files } } as any)
+      }
+    } else {
+      toast({
+        title: "Invalid file type",
+        description: "Please drop an image file",
+        variant: "destructive"
+      })
+    }
   }
 
   return (
@@ -265,8 +304,14 @@ export default function AsciiGenerator() {
                     <Label>Upload Image</Label>
                   </div>
                   <div
-                    className="flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg p-12 cursor-pointer hover:bg-gray-900/50 transition-colors"
+                    className={cn(
+                      "flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 cursor-pointer hover:bg-gray-900/50 transition-colors",
+                      isDragging ? "border-purple-500 bg-gray-900/50" : "border-gray-700",
+                    )}
                     onClick={triggerFileInput}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
                   >
                     <Input
                       ref={fileInputRef}
