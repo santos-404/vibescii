@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { toast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export default function AsciiGenerator() {
   const [asciiOutput, setAsciiOutput] = useState("")
@@ -24,6 +25,8 @@ export default function AsciiGenerator() {
   const [density, setDensity] = useState(1)
   const [inverted, setInverted] = useState(false)
   const [charSet, setCharSet] = useState("standard")
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
+  const [downloadFilename, setDownloadFilename] = useState("ascii-art.txt")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const charSets = {
@@ -125,13 +128,19 @@ export default function AsciiGenerator() {
   }
 
   const handleDownload = () => {
+    setDownloadFilename("ascii-art.txt")
+    setDownloadDialogOpen(true)
+  }
+
+  const handleDownloadConfirm = () => {
     const element = document.createElement("a")
     const file = new Blob([asciiOutput], { type: "text/plain" })
     element.href = URL.createObjectURL(file)
-    element.download = "ascii-art.txt"
+    element.download = downloadFilename.endsWith(".txt") ? downloadFilename : `${downloadFilename}.txt`
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
+    setDownloadDialogOpen(false)
   }
 
   const triggerFileInput = () => {
@@ -315,6 +324,31 @@ export default function AsciiGenerator() {
       <footer className="border-t border-gray-800 p-4 text-center text-sm text-gray-500">
         <p>Modern ASCII Art Generator &copy; {new Date().getFullYear()}</p>
       </footer>
+
+      <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+        <DialogContent className="bg-gray-950 border-gray-800">
+          <DialogHeader>
+            <DialogTitle className="text-white">Download ASCII Art</DialogTitle>
+            <DialogDescription>Enter a filename for your ASCII art</DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              value={downloadFilename}
+              onChange={(e) => setDownloadFilename(e.target.value)}
+              className="bg-gray-900 border-gray-800"
+              placeholder="Enter filename"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDownloadDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleDownloadConfirm}>
+              Download
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Toaster />
     </div>
