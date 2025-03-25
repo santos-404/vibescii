@@ -3,8 +3,8 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-zinc-950/80 backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-3">
+    <footer className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-700/50 bg-black/70 backdrop-blur-md">
+      <div className="container mx-auto px-6 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
           {/* Social Links */}
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-center sm:justify-start">

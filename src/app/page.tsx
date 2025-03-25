@@ -204,9 +204,17 @@ export default function AsciiGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white overflow-auto">
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      {/* Background decorative elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-purple-500/10 blur-[120px]" />
+        <div className="absolute top-[20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-pink-500/10 blur-[120px]" />
+        <div className="absolute bottom-[-20%] left-[20%] w-[60%] h-[60%] rounded-full bg-purple-600/10 blur-[120px]" />
+        <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-pink-600/10 blur-[120px]" />
+      </div>
+      
       <div className="relative min-h-screen flex flex-col">
-        <header className="border-b border-gray-800/50 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/20 sticky top-0 z-50">
+        <header className="border-b border-gray-800/10 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/40 sticky top-0 z-50">
           <div className="container mx-auto flex justify-between items-center">
             <button
               onClick={resetState}
@@ -282,180 +290,188 @@ export default function AsciiGenerator() {
           </div>
         </header>
 
-        <main className="container mx-auto p-4 pb-24 flex-1">
-          <Tabs defaultValue="image" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 mb-8 gap-2 bg-transparent relative p-1 rounded-xl">
-              <div 
-                className="absolute inset-0 flex transition-all duration-500 ease-out" 
-                style={{ 
-                  width: 'calc(50% - 0.5rem)', 
-                  transform: `translateX(${activeTab === 'image' ? '0' : 'calc(100% + 0.5rem)'})`,
-                  margin: '0.125rem',
-                  height: 'calc(100% - 0.125rem)'
-                }}
-              >
-                <div className="w-full h-full bg-gradient-to-r from-purple-500/40 via-pink-500/40 to-purple-500/40 rounded-lg" />
-              </div>
-              <TabsTrigger 
-                value="image" 
-                className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
-              >
-                <div className="relative">
-                  <ImageIcon className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
-                  <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+        <main className="container mx-auto p-4 pb-24 flex-1 relative z-10">
+          <div className="rounded-2xl backdrop-blur-xl bg-black/50 p-6 border border-gray-800/20">
+            <Tabs defaultValue="image" className="w-full" onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2 mb-8 gap-2 bg-transparent relative p-1 rounded-xl">
+                <div 
+                  className="absolute inset-0 flex transition-all duration-500 ease-out" 
+                  style={{ 
+                    width: 'calc(50% - 0.5rem)', 
+                    transform: `translateX(${activeTab === 'image' ? '0' : 'calc(100% + 0.5rem)'})`,
+                    margin: '0.125rem',
+                    height: 'calc(100% - 0.125rem)'
+                  }}
+                >
+                  <div className="w-full h-full bg-gradient-to-r from-purple-500/40 via-pink-500/40 to-purple-500/40 rounded-lg" />
                 </div>
-                <span className="relative">
-                  Image to ASCII
-                  <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
-                </span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="text" 
-                className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
-              >
-                <div className="relative">
-                  <Type className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
-                  <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
-                </div>
-                <span className="relative">
-                  Text to ASCII
-                  <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
-                </span>
-              </TabsTrigger>
-            </TabsList>
+                <TabsTrigger 
+                  value="image" 
+                  className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
+                >
+                  <div className="relative">
+                    <ImageIcon className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
+                    <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <span className="relative">
+                    Image to ASCII
+                    <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="text" 
+                  className="flex items-center justify-center gap-2 relative z-10 transition-all duration-300 cursor-pointer rounded-lg py-2 px-6 data-[state=active]:text-white data-[state=active]:font-medium group hover:text-white/80 bg-transparent"
+                >
+                  <div className="relative">
+                    <Type className="h-4 w-4 transition-transform duration-300 group-data-[state=active]:scale-110" />
+                    <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <span className="relative">
+                    Text to ASCII
+                    <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
+                  </span>
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="image" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-4">
+              <TabsContent value="image" className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="min-h-[32px] flex items-center">
+                        <Label>Upload Image</Label>
+                      </div>
+                      <div
+                        className={cn(
+                          "flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-64 cursor-pointer hover:bg-gray-900/30 transition-colors backdrop-blur-sm",
+                          isDragging ? "border-purple-500 bg-purple-500/10" : "border-gray-700",
+                        )}
+                        onClick={triggerFileInput}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                      >
+                        <Input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                        />
+                        <Upload className="h-8 w-8 mb-4 text-gray-500" />
+                        <p className="text-sm text-gray-400">Click to upload or drag and drop</p>
+                        <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+                      </div>
+                    </div>
+
+                    {imagePreview && (
+                      <div className="relative w-full h-48">
+                        <Image
+                          src={imagePreview}
+                          alt="Preview"
+                          width={400}
+                          height={300}
+                          className="object-contain"
+                          priority
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   <div className="space-y-2">
+                    <div className="flex justify-between items-center min-h-[32px]">
+                      <Label htmlFor="output-ascii-image">ASCII Output</Label>
+                      <div className="space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleCopy} 
+                          disabled={!asciiOutput}
+                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                        >
+                          <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                          Copy
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleDownload} 
+                          disabled={!asciiOutput}
+                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                        >
+                          <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                    <Textarea
+                      id="output-ascii-image"
+                      readOnly
+                      className="h-64 font-mono text-xs bg-gray-900/70 backdrop-blur-sm border-gray-800/30"
+                      value={asciiOutput}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="text" className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2 items-start">
+                  <div className="space-y-2 min-h-[32px]">
                     <div className="min-h-[32px] flex items-center">
-                      <Label>Upload Image</Label>
+                      <Label htmlFor="input-text">Input Text</Label>
                     </div>
-                    <div
-                      className={cn(
-                        "flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-64 cursor-pointer hover:bg-gray-900/30 transition-colors backdrop-blur-sm",
-                        isDragging ? "border-purple-500 bg-purple-500/10" : "border-gray-700",
-                      )}
-                      onClick={triggerFileInput}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                    >
-                      <Input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageUpload}
-                      />
-                      <Upload className="h-8 w-8 mb-4 text-gray-500" />
-                      <p className="text-sm text-gray-400">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
-                    </div>
+                    <Textarea
+                      id="input-text"
+                      placeholder="Type something here..."
+                      className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/70 backdrop-blur-sm border-gray-800/30 focus:border-purple-500/50 transition-colors"
+                      value={text}
+                      onChange={handleTextChange}
+                    />
                   </div>
 
-                  {imagePreview && (
-                    <div className="relative w-full h-48">
-                      <Image
-                        src={imagePreview}
-                        alt="Preview"
-                        width={400}
-                        height={300}
-                        className="object-contain"
-                        priority
-                      />
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center min-h-[32px]">
+                      <Label htmlFor="output-ascii">ASCII Output</Label>
+                      <div className="space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleCopy} 
+                          disabled={!asciiOutput}
+                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                        >
+                          <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                          Copy
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleDownload} 
+                          disabled={!asciiOutput}
+                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                        >
+                          <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                          Download
+                        </Button>
+                      </div>
                     </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center min-h-[32px]">
-                    <Label htmlFor="output-ascii-image">ASCII Output</Label>
-                    <div className="space-x-2">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleCopy} 
-                        disabled={!asciiOutput}
-                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                      >
-                        <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                        Copy
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleDownload} 
-                        disabled={!asciiOutput}
-                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                      >
-                        <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                        Download
-                      </Button>
-                    </div>
+                    <Textarea
+                      id="output-ascii"
+                      readOnly
+                      className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/70 backdrop-blur-sm border-gray-800/30"
+                      value={asciiOutput}
+                    />
                   </div>
-                  <Textarea
-                    id="output-ascii-image"
-                    readOnly
-                    className="h-64 font-mono text-xs bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
-                    value={asciiOutput}
-                  />
                 </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="text" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 items-start">
-                <div className="space-y-2 min-h-[32px]">
-                  <div className="min-h-[32px] flex items-center">
-                    <Label htmlFor="input-text">Input Text</Label>
-                  </div>
-                  <Textarea
-                    id="input-text"
-                    placeholder="Type something here..."
-                    className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50 focus:border-purple-500/50 transition-colors"
-                    value={text}
-                    onChange={handleTextChange}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center min-h-[32px]">
-                    <Label htmlFor="output-ascii">ASCII Output</Label>
-                    <div className="space-x-2">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleCopy} 
-                        disabled={!asciiOutput}
-                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                      >
-                        <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                        Copy
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleDownload} 
-                        disabled={!asciiOutput}
-                        className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/30 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                      >
-                        <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                        Download
-                      </Button>
-                    </div>
-                  </div>
-                  <Textarea
-                    id="output-ascii"
-                    readOnly
-                    className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/50 backdrop-blur-sm border-gray-800/50"
-                    value={asciiOutput}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+              </TabsContent>
+            </Tabs>
+          </div>
         </main>
+
+        <footer className="container mx-auto p-4 pb-8 text-center">
+          <div className="text-gray-500 text-sm">
+            Made with ♥️ by vibescii
+          </div>
+        </footer>
 
         <Toaster />
       </div>
