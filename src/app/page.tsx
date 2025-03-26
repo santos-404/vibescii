@@ -34,6 +34,7 @@ export default function AsciiGenerator() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [hasOpenedSettings, setHasOpenedSettings] = useState(false)
+  const [lastUploadedImage, setLastUploadedImage] = useState<string | null>(null)
 
   const charSets = {
     standard: "@%#*+=-:. ",
@@ -92,53 +93,69 @@ export default function AsciiGenerator() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    console.log('Image upload started:', file.name)
     const reader = new FileReader()
     reader.onload = (event) => {
       const img = new window.Image()
       img.crossOrigin = "anonymous"
       img.onload = () => {
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
-        if (!ctx) return
-
-        // Set dimensions based on aspect ratio
-        const maxWidth = 100 // Limit width for reasonable ASCII output
-        const scale = maxWidth / img.width
-        canvas.width = maxWidth
-        canvas.height = img.height * scale
-
-        // Draw image to canvas
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-        // Get image data
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const pixels = imageData.data
-
-        // Convert to ASCII
-        let ascii = ""
-        const chars = charSets[charSet as keyof typeof charSets]
-
-        for (let y = 0; y < canvas.height; y += density) {
-          for (let x = 0; x < canvas.width; x += density * 0.5) {
-            const idx = (Math.floor(y) * canvas.width + Math.floor(x)) * 4
-            const brightness = (pixels[idx] + pixels[idx + 1] + pixels[idx + 2]) / 3 / 255
-
-            // Map brightness to character
-            const charIndex = inverted
-              ? Math.floor((1 - brightness) * (chars.length - 1))
-              : Math.floor(brightness * (chars.length - 1))
-
-            ascii += chars[charIndex]
-          }
-          ascii += "\n"
-        }
-
-        setAsciiOutput(ascii)
-        setImagePreview(event.target?.result as string)
+        console.log('Image loaded successfully')
+        const imageData = event.target?.result as string
+        setLastUploadedImage(imageData)
+        setImagePreview(imageData)
+        convertImageToAscii(img)
       }
       img.src = event.target?.result as string
     }
     reader.readAsDataURL(file)
+  }
+
+  const convertImageToAscii = (img: HTMLImageElement) => {
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    const maxWidth = 100
+    const scale = maxWidth / img.width
+    canvas.width = maxWidth
+    canvas.height = img.height * scale
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const pixels = imageData.data
+
+    let ascii = ""
+    const chars = charSets[charSet as keyof typeof charSets]
+
+    for (let y = 0; y < canvas.height; y += density) {
+      for (let x = 0; x < canvas.width; x += density * 0.5) {
+        const idx = (Math.floor(y) * canvas.width + Math.floor(x)) * 4
+        const brightness = (pixels[idx] + pixels[idx + 1] + pixels[idx + 2]) / 3 / 255
+
+        const charIndex = inverted
+          ? Math.floor((1 - brightness) * (chars.length - 1))
+          : Math.floor(brightness * (chars.length - 1))
+
+        ascii += chars[charIndex]
+      }
+      ascii += "\n"
+    }
+
+    setAsciiOutput(ascii)
+  }
+
+  const handleRebuild = () => {
+    console.log('Rebuild clicked, lastUploadedImage:', !!lastUploadedImage)
+    if (lastUploadedImage) {
+      const img = new window.Image()
+      img.crossOrigin = "anonymous"
+      img.onload = () => {
+        console.log('Image reloaded for rebuild')
+        convertImageToAscii(img)
+      }
+      img.src = lastUploadedImage
+    }
   }
 
   const handleCopy = () => {
@@ -370,15 +387,34 @@ export default function AsciiGenerator() {
                   </div>
 
                   {imagePreview && (
-                    <div className="relative w-full h-48">
-                      <Image
-                        src={imagePreview}
-                        alt="Preview"
-                        width={400}
-                        height={300}
-                        className="object-contain"
-                        priority
-                      />
+                    <div className="space-y-4">
+                      <Button
+                        onClick={handleRebuild}
+                        className="relative w-full bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
+                      >
+                        <span className="relative z-10">
+                          Rebuild ASCII Art
+                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300 group-hover:w-full" />
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
+                      </Button>
+                      <div className="relative w-full aspect-video">
+                        <Image
+                          src={imagePreview}
+                          alt="Preview"
+                          fill
+                          className="object-contain"
+                          priority
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -502,4 +538,3 @@ export default function AsciiGenerator() {
     </div>
   )
 }
-
