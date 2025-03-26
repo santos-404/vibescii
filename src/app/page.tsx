@@ -223,6 +223,15 @@ export default function AsciiGenerator() {
     }
   }
 
+  const handleRemoveImage = () => {
+    setImagePreview(null)
+    setLastUploadedImage(null)
+    setAsciiOutput("")
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
   return (
     <div className="min-h-screen relative overflow-auto">
       {/* Background gradient with blur */}
@@ -398,6 +407,14 @@ export default function AsciiGenerator() {
                           className="object-contain"
                           priority
                         />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 backdrop-blur-sm"
+                          onClick={handleRemoveImage}
+                        >
+                          Remove
+                        </Button>
                       </div>
                     )}
                   </div>
