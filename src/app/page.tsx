@@ -6,6 +6,7 @@ import { useState, useRef, type ChangeEvent } from "react"
 import { Upload, Download, Copy, Settings, ImageIcon, Type, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { asciiPatterns } from "@/lib/ascii-patterns"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -19,9 +20,11 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { toast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { LanguageSelector } from "@/components/ui/LanguageSelector"
 import Image from "next/image"
 
 export default function AsciiGenerator() {
+  const { t } = useTranslation();
   const [asciiOutput, setAsciiOutput] = useState("")
   const [text, setText] = useState("")
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -244,7 +247,7 @@ export default function AsciiGenerator() {
               className="relative text-3xl font-bold px-4 py-2 rounded-xl cursor-pointer overflow-hidden group bg-gray-900/30 backdrop-blur-sm"
             >
               <span className="relative z-10 inline-block bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient-x bg-[length:200%_auto]">
-                vibescii
+                {t('main.title')}
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out rounded-xl" />
@@ -265,18 +268,22 @@ export default function AsciiGenerator() {
                     </>
                   )}
                   <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-xs text-gray-300 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-800">
-                    Customize chars
+                    {t('settings.title')}
                   </div>
                 </Button>
               </SheetTrigger>
               <SheetContent className="bg-gray-950 border-gray-800">
                 <SheetHeader>
-                  <SheetTitle className="text-white">Settings</SheetTitle>
-                  <SheetDescription className="text-gray-300">Customize your ASCII art generation</SheetDescription>
+                  <SheetTitle className="text-white">{t('settings.title')}</SheetTitle>
+                  <SheetDescription className="text-gray-300">{t('settings.description')}</SheetDescription>
                 </SheetHeader>
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="density" className="text-white">Density</Label>
+                    <LanguageSelector />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="density" className="text-white">{t('output.size')}</Label>
                     <div className="relative">
                       <Slider
                         id="density"
@@ -293,29 +300,29 @@ export default function AsciiGenerator() {
                       />
                     </div>
                     <div className="text-xs text-gray-300 flex justify-between items-center">
-                      <span>More detail</span>
+                      <span>{t('output.moreDetail')}</span>
                       <span className="font-medium text-purple-400">{density.toFixed(1)}</span>
-                      <span>Less detail</span>
+                      <span>{t('output.lessDetail')}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="inverted" className="text-white">Invert Colors</Label>
+                    <Label htmlFor="inverted" className="text-white">{t('output.invertColors')}</Label>
                     <Switch id="inverted" checked={inverted} onCheckedChange={setInverted} />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="charset" className="text-white">Character Set</Label>
+                    <Label htmlFor="charset" className="text-white">{t('patterns.title')}</Label>
                     <Select value={charSet} onValueChange={setCharSet}>
                       <SelectTrigger id="charset" className="text-white">
-                        <SelectValue placeholder="Select character set" />
+                        <SelectValue placeholder={t('patterns.selectPattern')} />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-950 border-gray-800 text-white">
-                        <SelectItem value="standard" className="text-white hover:bg-purple-500/20">Standard</SelectItem>
-                        <SelectItem value="detailed" className="text-white hover:bg-purple-500/20">Detailed</SelectItem>
-                        <SelectItem value="simple" className="text-white hover:bg-purple-500/20">Simple</SelectItem>
-                        <SelectItem value="blocks" className="text-white hover:bg-purple-500/20">Blocks</SelectItem>
-                        <SelectItem value="binary" className="text-white hover:bg-purple-500/20">Binary</SelectItem>
+                        <SelectItem value="standard" className="text-white hover:bg-purple-500/20">{t('patterns.standard')}</SelectItem>
+                        <SelectItem value="detailed" className="text-white hover:bg-purple-500/20">{t('patterns.detailed')}</SelectItem>
+                        <SelectItem value="simple" className="text-white hover:bg-purple-500/20">{t('patterns.simple')}</SelectItem>
+                        <SelectItem value="blocks" className="text-white hover:bg-purple-500/20">{t('patterns.blocks')}</SelectItem>
+                        <SelectItem value="binary" className="text-white hover:bg-purple-500/20">{t('patterns.binary')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -349,7 +356,7 @@ export default function AsciiGenerator() {
                     <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
                   </div>
                   <span className="relative">
-                    Image to ASCII
+                    {t('main.imageToAscii')}
                     <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
                   </span>
                 </TabsTrigger>
@@ -362,7 +369,7 @@ export default function AsciiGenerator() {
                     <div className="absolute inset-0 bg-purple-500/30 rounded-full blur-sm opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300" />
                   </div>
                   <span className="relative">
-                    Text to ASCII
+                    {t('main.textToAscii')}
                     <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 transition-all duration-300 group-data-[state=active]:w-full" />
                   </span>
                 </TabsTrigger>
@@ -373,7 +380,7 @@ export default function AsciiGenerator() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <div className="min-h-[32px] flex items-center">
-                        <Label>Upload Image</Label>
+                        <Label>{t('main.uploadImage')}</Label>
                       </div>
                       <div
                         className={cn(
@@ -393,8 +400,8 @@ export default function AsciiGenerator() {
                           onChange={handleImageUpload}
                         />
                         <Upload className="h-8 w-8 mb-4 text-gray-500" />
-                        <p className="text-sm text-gray-400">Click to upload or drag and drop</p>
-                        <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+                        <p className="text-sm text-gray-400">{t('main.dragAndDrop')}</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('main.fileTypes')}</p>
                       </div>
                     </div>
                   </div>
@@ -402,7 +409,7 @@ export default function AsciiGenerator() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <div className="flex justify-between items-center min-h-[32px]">
-                        <Label htmlFor="output-ascii-image">ASCII Output</Label>
+                        <Label htmlFor="output-ascii-image">{t('main.asciiOutput')}</Label>
                         <div className="space-x-2">
                           <Button 
                             variant="ghost" 
@@ -412,7 +419,7 @@ export default function AsciiGenerator() {
                             className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
                           >
                             <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                            Copy
+                            {t('main.copy')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -422,7 +429,7 @@ export default function AsciiGenerator() {
                             className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
                           >
                             <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                            Download
+                            {t('main.download')}
                           </Button>
                         </div>
                       </div>
@@ -439,7 +446,7 @@ export default function AsciiGenerator() {
                     {imagePreview && (
                       <div className="mt-8 p-6 rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 max-w-2xl mx-auto">
                         <div className="flex justify-between items-center mb-4">
-                          <Label className="text-lg">Attached Image</Label>
+                          <Label className="text-lg">{t('main.attachedImage')}</Label>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -454,7 +461,7 @@ export default function AsciiGenerator() {
                           className="relative w-full mb-4 bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
                         >
                           <span className="relative z-10">
-                            Rebuild ASCII Art
+                            {t('main.rebuildAscii')}
                             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300 group-hover:w-full" />
                           </span>
                           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -481,11 +488,11 @@ export default function AsciiGenerator() {
                 <div className="grid gap-4 md:grid-cols-2 items-start">
                   <div className="space-y-2 min-h-[32px]">
                     <div className="min-h-[32px] flex items-center">
-                      <Label htmlFor="input-text">Input Text</Label>
+                      <Label htmlFor="input-text">{t('main.inputText')}</Label>
                     </div>
                     <Textarea
                       id="input-text"
-                      placeholder="Type something here..."
+                      placeholder={t('main.inputPlaceholder')}
                       className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/70 backdrop-blur-sm border-gray-800/30 focus:border-purple-500/50 transition-colors"
                       value={text}
                       onChange={handleTextChange}
@@ -494,7 +501,7 @@ export default function AsciiGenerator() {
 
                   <div className="space-y-2">
                     <div className="flex justify-between items-center min-h-[32px]">
-                      <Label htmlFor="output-ascii">ASCII Output</Label>
+                      <Label htmlFor="output-ascii">{t('main.asciiOutput')}</Label>
                       <div className="space-x-2">
                         <Button 
                           variant="ghost" 
@@ -504,7 +511,7 @@ export default function AsciiGenerator() {
                           className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
                         >
                           <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                          Copy
+                          {t('main.copy')}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -514,7 +521,7 @@ export default function AsciiGenerator() {
                           className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
                         >
                           <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                          Download
+                          {t('main.download')}
                         </Button>
                       </div>
                     </div>
@@ -533,7 +540,7 @@ export default function AsciiGenerator() {
 
         <footer className="container mx-auto p-4 pb-8 text-center">
           <div className="text-gray-500 text-sm">
-            Made with ♥️ by vibescii
+            {t('main.footer.madeWith')} ♥️ {t('main.footer.by')} {t('main.footer.vibescii')}
           </div>
         </footer>
         <Toaster />
@@ -542,23 +549,23 @@ export default function AsciiGenerator() {
       <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
         <DialogContent className="bg-gray-950 border-gray-800">
           <DialogHeader>
-            <DialogTitle className="text-white">Download ASCII Art</DialogTitle>
-            <DialogDescription>Enter a filename for your ASCII art</DialogDescription>
+            <DialogTitle className="text-white">{t('main.downloadDialog.title')}</DialogTitle>
+            <DialogDescription>{t('main.downloadDialog.description')}</DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <Input
               value={downloadFilename}
               onChange={(e) => setDownloadFilename(e.target.value)}
               className="bg-gray-900 border-gray-800"
-              placeholder="Enter filename"
+              placeholder={t('main.downloadDialog.placeholder')}
             />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDownloadDialogOpen(false)}>
-              Cancel
+              {t('main.downloadDialog.cancel')}
             </Button>
             <Button onClick={handleDownloadConfirm}>
-              Download
+              {t('main.downloadDialog.download')}
             </Button>
           </DialogFooter>
         </DialogContent>
