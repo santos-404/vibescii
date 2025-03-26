@@ -390,12 +390,11 @@ export default function AsciiGenerator() {
                     </div>
 
                     {imagePreview && (
-                      <div className="relative w-full h-48">
+                      <div className="relative w-full aspect-video">
                         <Image
                           src={imagePreview}
                           alt="Preview"
-                          width={400}
-                          height={300}
+                          fill
                           className="object-contain"
                           priority
                         />
@@ -403,8 +402,42 @@ export default function AsciiGenerator() {
                     )}
                   </div>
 
-                  {imagePreview && (
-                    <div className="space-y-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center min-h-[32px]">
+                        <Label htmlFor="output-ascii-image">ASCII Output</Label>
+                        <div className="space-x-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={handleCopy} 
+                            disabled={!asciiOutput}
+                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                          >
+                            <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                            Copy
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={handleDownload} 
+                            disabled={!asciiOutput}
+                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                          >
+                            <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                            Download
+                          </Button>
+                        </div>
+                      </div>
+                      <Textarea
+                        id="output-ascii-image"
+                        readOnly
+                        className="h-64 font-mono text-xs bg-gray-900/70 backdrop-blur-sm border-gray-800/30"
+                        value={asciiOutput}
+                      />
+                    </div>
+
+                    {imagePreview && (
                       <Button
                         onClick={handleRebuild}
                         className="relative w-full bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
@@ -423,22 +456,7 @@ export default function AsciiGenerator() {
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
                       </Button>
-                      <div className="relative w-full aspect-video">
-                        <Image
-                          src={imagePreview}
-                          alt="Preview"
-                          fill
-                          className="object-contain"
-                          priority
-                        />
-                      </div>
-                    </div>
-                    <Textarea
-                      id="output-ascii-image"
-                      readOnly
-                      className="h-64 font-mono text-xs bg-gray-900/70 backdrop-blur-sm border-gray-800/30"
-                      value={asciiOutput}
-                    />
+                    )}
                   </div>
                 </div>
               </TabsContent>
@@ -502,7 +520,6 @@ export default function AsciiGenerator() {
             Made with ♥️ by vibescii
           </div>
         </footer>
-
         <Toaster />
       </div>
 
