@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, type ChangeEvent } from "react"
-import { Upload, Download, Copy, Settings, ImageIcon, Type } from "lucide-react"
+import { Upload, Download, Copy, Settings, ImageIcon, Type, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { asciiPatterns } from "@/lib/ascii-patterns"
 
@@ -397,26 +397,6 @@ export default function AsciiGenerator() {
                         <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
                       </div>
                     </div>
-
-                    {imagePreview && (
-                      <div className="relative w-full aspect-video">
-                        <Image
-                          src={imagePreview}
-                          alt="Preview"
-                          fill
-                          className="object-contain"
-                          priority
-                        />
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 backdrop-blur-sm"
-                          onClick={handleRemoveImage}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -454,28 +434,47 @@ export default function AsciiGenerator() {
                       />
                     </div>
 
-                    {imagePreview && (
-                      <Button
-                        onClick={handleRebuild}
-                        className="relative w-full bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
-                      >
-                        <span className="relative z-10">
-                          Rebuild ASCII Art
-                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300 group-hover:w-full" />
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
-                      </Button>
-                    )}
                   </div>
                 </div>
+                    {imagePreview && (
+                      <div className="mt-8 p-6 rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 max-w-2xl mx-auto">
+                        <div className="flex justify-between items-center mb-4">
+                          <Label className="text-lg">Attached Image</Label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full bg-red-500/80 hover:bg-red-500 backdrop-blur-sm"
+                            onClick={handleRemoveImage}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Button
+                          onClick={handleRebuild}
+                          className="relative w-full mb-4 bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
+                        >
+                          <span className="relative z-10">
+                            Rebuild ASCII Art
+                            <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300 group-hover:w-full" />
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
+                        </Button>
+                        <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-800/30">
+                          <Image
+                            src={imagePreview}
+                            alt="Preview"
+                            fill
+                            className="object-contain"
+                            priority
+                          />
+                        </div>
+                      </div>
+                    )}
               </TabsContent>
 
               <TabsContent value="text" className="space-y-4">
