@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useRef, type ChangeEvent } from "react"
 import { Upload, Download, Copy, Settings, ImageIcon, Type } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { asciiPatterns } from "@/lib/ascii-patterns"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -62,27 +63,29 @@ export default function AsciiGenerator() {
   }
 
   const convertTextToAscii = (inputText: string) => {
-    // Simple text to ASCII art conversion
-    // This is a basic implementation - could be enhanced with more sophisticated algorithms
     if (!inputText) {
       setAsciiOutput("")
       return
     }
 
-    const lines = inputText.split("\n")
-    let result = ""
+    // Convert input to uppercase for pattern matching
+    const text = inputText.toUpperCase()
+    const lines: string[] = Array(5).fill("")
 
-    lines.forEach((line) => {
-      let asciiLine = ""
-      for (let i = 0; i < line.length; i++) {
-        const charCode = line.charCodeAt(i)
-        const index = charCode % charSets[charSet as keyof typeof charSets].length
-        asciiLine += charSets[charSet as keyof typeof charSets][index]
+    // Process each character
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i]
+      const pattern = asciiPatterns[char.toLowerCase()] || asciiPatterns[' ']
+
+      // Add each line of the pattern to the corresponding output line
+      for (let j = 0; j < 5; j++) {
+        // Only add space between characters, not at the start
+        lines[j] += (i === 0 ? "" : " ") + pattern[j]
       }
-      result += asciiLine + "\n"
-    })
+    }
 
-    setAsciiOutput(result)
+    // Join the lines with newlines and trim extra spaces
+    setAsciiOutput(lines.map(line => line.trim()).join("\n"))
   }
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
