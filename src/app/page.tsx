@@ -224,13 +224,15 @@ export default function AsciiGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white overflow-auto">
+    <div className="min-h-screen relative overflow-auto">
+      {/* Background gradient with blur */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/30 via-pink-500/20 to-orange-500/30 blur-3xl -z-10" />
       <div className="relative min-h-screen flex flex-col">
-        <header className="border-b border-gray-800/50 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/20 sticky top-0 z-50">
+        <header className="border-b border-gray-800/30 p-4 min-h-[72px] flex items-center backdrop-blur-xl bg-gradient-to-r from-gray-950/40 via-gray-900/40 to-gray-950/40 sticky top-0 z-50 shadow-lg shadow-purple-500/5">
           <div className="container mx-auto flex justify-between items-center">
             <button
               onClick={resetState}
-              className="relative text-3xl font-bold px-4 py-2 rounded-xl border border-transparent hover:border-purple-500/20 cursor-pointer overflow-hidden group"
+              className="relative text-3xl font-bold px-4 py-2 rounded-xl cursor-pointer overflow-hidden group bg-gray-900/30 backdrop-blur-sm"
             >
               <span className="relative z-10 inline-block bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient-x bg-[length:200%_auto]">
                 vibescii
