@@ -245,15 +245,26 @@ export default function AsciiGenerator() {
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
                     <Label htmlFor="density" className="text-white">Density</Label>
-                    <Slider
-                      id="density"
-                      min={0.5}
-                      max={3}
-                      step={0.1}
-                      value={[density]}
-                      onValueChange={(value) => setDensity(value[0])}
-                    />
-                    <div className="text-xs text-gray-300">{density.toFixed(1)} (Lower = More detail)</div>
+                    <div className="relative">
+                      <Slider
+                        id="density"
+                        min={0.5}
+                        max={3}
+                        step={0.1}
+                        value={[density]}
+                        onValueChange={(value) => setDensity(value[0])}
+                        className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 [&_[role=slider]]:border-2 [&_[role=slider]]:border-purple-500 [&_[role=slider]]:bg-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:transition-all [&_[role=slider]]:duration-200 [&_[role=slider]]:hover:scale-110 [&_[role=slider]]:hover:border-pink-500 [&_[role=slider]]:focus:ring-2 [&_[role=slider]]:focus:ring-purple-500/50 [&_[role=slider]]:focus:ring-offset-2 [&_[role=slider]]:focus:ring-offset-gray-950 [&_[role=slider]]:focus:outline-none [&_[role=slider]]:focus:border-pink-500 [&_[role=slider]]:active:scale-95"
+                      />
+                      <div 
+                        className="absolute h-1.5 top-1/2 -translate-y-1/2 left-0 right-0 rounded-full bg-gradient-to-r from-purple-500/50 via-pink-500/50 to-purple-500/50"
+                        style={{ width: `${((density - 0.5) / 2.5) * 100}%` }}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-300 flex justify-between items-center">
+                      <span>More detail</span>
+                      <span className="font-medium text-purple-400">{density.toFixed(1)}</span>
+                      <span>Less detail</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between">
