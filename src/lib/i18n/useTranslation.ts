@@ -15,6 +15,8 @@ type TranslationStore = {
   t: (key: string) => string;
 };
 
+type TranslationValue = string | { [key: string]: TranslationValue };
+
 export const useTranslation = create<TranslationStore>()(
   persist(
     (set, get) => ({
@@ -22,17 +24,22 @@ export const useTranslation = create<TranslationStore>()(
       setLanguage: (language: Language) => set({ language }),
       t: (key: string) => {
         const keys = key.split('.');
-        let value: any = translations[get().language];
+        let value: TranslationValue = translations[get().language];
         
         for (const k of keys) {
-          value = value?.[k];
+          if (typeof value === 'object' && value !== null) {
+            value = value[k];
+          } else {
+            console.warn(`Translation key not found: ${key}`);
+            return key;
+          }
           if (value === undefined) {
             console.warn(`Translation key not found: ${key}`);
             return key;
           }
         }
         
-        return value;
+        return typeof value === 'string' ? value : key;
       },
     }),
     {
