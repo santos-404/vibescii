@@ -281,51 +281,6 @@ export default function AsciiGenerator() {
                   <div className="space-y-2">
                     <LanguageSelector />
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="density" className="text-white">{t('output.size')}</Label>
-                    <div className="relative">
-                      <Slider
-                        id="density"
-                        min={0.5}
-                        max={3}
-                        step={0.1}
-                        value={[density]}
-                        onValueChange={(value) => setDensity(value[0])}
-                        className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 [&_[role=slider]]:border-2 [&_[role=slider]]:border-purple-500 [&_[role=slider]]:bg-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:transition-all [&_[role=slider]]:duration-200 [&_[role=slider]]:hover:scale-110 [&_[role=slider]]:hover:border-pink-500 [&_[role=slider]]:focus:ring-2 [&_[role=slider]]:focus:ring-purple-500/50 [&_[role=slider]]:focus:ring-offset-2 [&_[role=slider]]:focus:ring-offset-gray-950 [&_[role=slider]]:focus:outline-none [&_[role=slider]]:focus:border-pink-500 [&_[role=slider]]:active:scale-95"
-                      />
-                      <div 
-                        className="absolute h-1.5 top-1/2 -translate-y-1/2 left-0 right-0 rounded-full bg-gradient-to-r from-purple-500/50 via-pink-500/50 to-purple-500/50"
-                        style={{ width: `${((density - 0.5) / 2.5) * 100}%` }}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-300 flex justify-between items-center">
-                      <span>{t('output.moreDetail')}</span>
-                      <span className="font-medium text-purple-400">{density.toFixed(1)}</span>
-                      <span>{t('output.lessDetail')}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="inverted" className="text-white">{t('output.invertColors')}</Label>
-                    <Switch id="inverted" checked={inverted} onCheckedChange={setInverted} />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="charset" className="text-white">{t('patterns.title')}</Label>
-                    <Select value={charSet} onValueChange={setCharSet}>
-                      <SelectTrigger id="charset" className="text-white">
-                        <SelectValue placeholder={t('patterns.selectPattern')} />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-950 border-gray-800 text-white">
-                        <SelectItem value="standard" className="text-white hover:bg-purple-500/20">{t('patterns.standard')}</SelectItem>
-                        <SelectItem value="detailed" className="text-white hover:bg-purple-500/20">{t('patterns.detailed')}</SelectItem>
-                        <SelectItem value="simple" className="text-white hover:bg-purple-500/20">{t('patterns.simple')}</SelectItem>
-                        <SelectItem value="blocks" className="text-white hover:bg-purple-500/20">{t('patterns.blocks')}</SelectItem>
-                        <SelectItem value="binary" className="text-white hover:bg-purple-500/20">{t('patterns.binary')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -375,6 +330,58 @@ export default function AsciiGenerator() {
                 </TabsTrigger>
               </TabsList>
 
+              <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-black/95 via-black/90 to-black/95 backdrop-blur-sm border border-gray-800/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20">
+                <div className="grid gap-6 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="density" className="text-white">{t('output.size')}</Label>
+                    <div className="relative">
+                      <Slider
+                        id="density"
+                        min={0.5}
+                        max={3}
+                        step={0.1}
+                        value={[density]}
+                        onValueChange={(value) => setDensity(value[0])}
+                        className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 [&_[role=slider]]:border-2 [&_[role=slider]]:border-purple-500 [&_[role=slider]]:bg-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:transition-all [&_[role=slider]]:duration-200 [&_[role=slider]]:hover:scale-110 [&_[role=slider]]:hover:border-pink-500 [&_[role=slider]]:focus:ring-2 [&_[role=slider]]:focus:ring-purple-500/50 [&_[role=slider]]:focus:ring-offset-2 [&_[role=slider]]:focus:ring-offset-gray-950 [&_[role=slider]]:focus:outline-none [&_[role=slider]]:focus:border-pink-500 [&_[role=slider]]:active:scale-95 [&_[role=slider]]:track:bg-white"
+                      />
+                      <div 
+                        className="absolute h-1.5 top-1/2 -translate-y-1/2 left-0 right-0 rounded-full bg-gradient-to-r from-purple-500/50 via-pink-500/50 to-purple-500/50"
+                        style={{ width: `${((density - 0.5) / 2.5) * 100}%` }}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-300 flex justify-between items-center">
+                      <span>{t('output.moreDetail')}</span>
+                      <span className="font-medium text-purple-400">{density.toFixed(1)}</span>
+                      <span>{t('output.lessDetail')}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="charset" className="text-white">{t('patterns.title')}</Label>
+                    <Select value={charSet} onValueChange={setCharSet}>
+                      <SelectTrigger id="charset" className="text-white">
+                        <SelectValue placeholder={t('patterns.selectPattern')} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-950 border-gray-800 text-white">
+                        <SelectItem value="standard" className="text-white hover:bg-purple-500/20">{t('patterns.standard')}</SelectItem>
+                        <SelectItem value="detailed" className="text-white hover:bg-purple-500/20">{t('patterns.detailed')}</SelectItem>
+                        <SelectItem value="simple" className="text-white hover:bg-purple-500/20">{t('patterns.simple')}</SelectItem>
+                        <SelectItem value="blocks" className="text-white hover:bg-purple-500/20">{t('patterns.blocks')}</SelectItem>
+                        <SelectItem value="binary" className="text-white hover:bg-purple-500/20">{t('patterns.binary')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="inverted" className="text-white">{t('output.invertColors')}</Label>
+                    <div className="flex items-center justify-between bg-gradient-to-br from-black/95 via-black/90 to-black/95 backdrop-blur-sm rounded-lg p-3 border border-gray-800/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20">
+                      <span className="text-sm text-gray-300">{t('output.invertColors')}</span>
+                      <Switch id="inverted" className="bg-purple-500/50" checked={inverted} onCheckedChange={setInverted} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <TabsContent value="image" className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-4">
@@ -416,7 +423,7 @@ export default function AsciiGenerator() {
                             size="sm" 
                             onClick={handleCopy} 
                             disabled={!asciiOutput}
-                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20"
                           >
                             <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                             {t('main.copy')}
@@ -426,7 +433,7 @@ export default function AsciiGenerator() {
                             size="sm" 
                             onClick={handleDownload} 
                             disabled={!asciiOutput}
-                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20"
                           >
                             <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                             {t('main.download')}
@@ -436,7 +443,7 @@ export default function AsciiGenerator() {
                       <Textarea
                         id="output-ascii-image"
                         readOnly
-                        className="h-64 font-mono text-xs bg-gray-900/70 backdrop-blur-sm border-gray-800/30"
+                        className="h-64 font-mono text-xs bg-gradient-to-br from-black/95 via-black/90 to-black/95 backdrop-blur-sm border-gray-800/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20 shadow-inner shadow-black/40"
                         value={asciiOutput}
                       />
                     </div>
@@ -444,13 +451,13 @@ export default function AsciiGenerator() {
                   </div>
                 </div>
                     {imagePreview && (
-                      <div className="mt-8 p-6 rounded-2xl bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 max-w-2xl mx-auto">
+                      <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-black/95 via-black/90 to-black/95 backdrop-blur-sm border border-gray-800/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20 max-w-2xl mx-auto">
                         <div className="flex justify-between items-center mb-4">
                           <Label className="text-lg">{t('main.attachedImage')}</Label>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full bg-red-500/80 hover:bg-red-500 backdrop-blur-sm"
+                            className="h-8 w-8 rounded-full bg-red-500/80 hover:bg-red-500 backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20"
                             onClick={handleRemoveImage}
                           >
                             <X className="h-4 w-4" />
@@ -458,7 +465,7 @@ export default function AsciiGenerator() {
                         </div>
                         <Button
                           onClick={handleRebuild}
-                          className="relative w-full mb-4 bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
+                          className="relative w-full mb-4 bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95 shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20"
                         >
                           <span className="relative z-10">
                             {t('main.rebuildAscii')}
@@ -493,7 +500,7 @@ export default function AsciiGenerator() {
                     <Textarea
                       id="input-text"
                       placeholder={t('main.inputPlaceholder')}
-                      className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/70 backdrop-blur-sm border-gray-800/30 focus:border-purple-500/50 transition-colors"
+                      className="h-64 font-mono text-xs leading-[1.2] bg-gradient-to-br from-black/95 via-black/90 to-black/95 backdrop-blur-sm border-gray-800/30 focus:border-purple-500/50 transition-colors shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20 shadow-inner shadow-black/40"
                       value={text}
                       onChange={handleTextChange}
                     />
@@ -508,7 +515,7 @@ export default function AsciiGenerator() {
                           size="sm" 
                           onClick={handleCopy} 
                           disabled={!asciiOutput}
-                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20"
                         >
                           <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                           {t('main.copy')}
@@ -518,7 +525,7 @@ export default function AsciiGenerator() {
                           size="sm" 
                           onClick={handleDownload} 
                           disabled={!asciiOutput}
-                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
+                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20"
                         >
                           <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
                           {t('main.download')}
@@ -528,7 +535,7 @@ export default function AsciiGenerator() {
                     <Textarea
                       id="output-ascii"
                       readOnly
-                      className="h-64 font-mono text-xs leading-[1.2] bg-gray-900/70 backdrop-blur-sm border-gray-800/30"
+                      className="h-64 font-mono text-xs leading-[1.2] bg-gradient-to-br from-black/95 via-black/90 to-black/95 backdrop-blur-sm border-gray-800/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] shadow-purple-500/20 shadow-inner shadow-black/40"
                       value={asciiOutput}
                     />
                   </div>
