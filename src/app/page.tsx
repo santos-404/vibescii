@@ -240,11 +240,11 @@ export default function AsciiGenerator() {
               <SheetContent className="bg-gray-950 border-gray-800">
                 <SheetHeader>
                   <SheetTitle className="text-white">Settings</SheetTitle>
-                  <SheetDescription>Customize your ASCII art generation</SheetDescription>
+                  <SheetDescription className="text-gray-300">Customize your ASCII art generation</SheetDescription>
                 </SheetHeader>
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="density">Density</Label>
+                    <Label htmlFor="density" className="text-white">Density</Label>
                     <Slider
                       id="density"
                       min={0.5}
@@ -253,18 +253,18 @@ export default function AsciiGenerator() {
                       value={[density]}
                       onValueChange={(value) => setDensity(value[0])}
                     />
-                    <div className="text-xs text-gray-400">{density.toFixed(1)} (Lower = More detail)</div>
+                    <div className="text-xs text-gray-300">{density.toFixed(1)} (Lower = More detail)</div>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="inverted">Invert Colors</Label>
+                    <Label htmlFor="inverted" className="text-white">Invert Colors</Label>
                     <Switch id="inverted" checked={inverted} onCheckedChange={setInverted} />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="charset">Character Set</Label>
+                    <Label htmlFor="charset" className="text-white">Character Set</Label>
                     <Select value={charSet} onValueChange={setCharSet}>
-                      <SelectTrigger id="charset">
+                      <SelectTrigger id="charset" className="text-white">
                         <SelectValue placeholder="Select character set" />
                       </SelectTrigger>
                       <SelectContent>
