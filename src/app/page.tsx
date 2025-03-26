@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useRef, type ChangeEvent } from "react"
 import { Upload, Download, Copy, Settings, ImageIcon, Type } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { asciiPatterns } from "@/lib/ascii-patterns"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -33,6 +34,7 @@ export default function AsciiGenerator() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [hasOpenedSettings, setHasOpenedSettings] = useState(false)
+  const [lastUploadedImage, setLastUploadedImage] = useState<string | null>(null)
 
   const charSets = {
     standard: "@%#*+=-:. ",
@@ -62,80 +64,98 @@ export default function AsciiGenerator() {
   }
 
   const convertTextToAscii = (inputText: string) => {
-    // Simple text to ASCII art conversion
-    // This is a basic implementation - could be enhanced with more sophisticated algorithms
     if (!inputText) {
       setAsciiOutput("")
       return
     }
 
-    const lines = inputText.split("\n")
-    let result = ""
+    // Convert input to uppercase for pattern matching
+    const text = inputText.toUpperCase()
+    const lines: string[] = Array(5).fill("")
 
-    lines.forEach((line) => {
-      let asciiLine = ""
-      for (let i = 0; i < line.length; i++) {
-        const charCode = line.charCodeAt(i)
-        const index = charCode % charSets[charSet as keyof typeof charSets].length
-        asciiLine += charSets[charSet as keyof typeof charSets][index]
+    // Process each character
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i]
+      const pattern = asciiPatterns[char.toLowerCase()] || asciiPatterns[' ']
+
+      // Add each line of the pattern to the corresponding output line
+      for (let j = 0; j < 5; j++) {
+        // Only add space between characters, not at the start
+        lines[j] += (i === 0 ? "" : " ") + pattern[j]
       }
-      result += asciiLine + "\n"
-    })
+    }
 
-    setAsciiOutput(result)
+    // Join the lines with newlines and trim extra spaces
+    setAsciiOutput(lines.map(line => line.trim()).join("\n"))
   }
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
+    console.log('Image upload started:', file.name)
     const reader = new FileReader()
     reader.onload = (event) => {
       const img = new window.Image()
       img.crossOrigin = "anonymous"
       img.onload = () => {
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
-        if (!ctx) return
-
-        // Set dimensions based on aspect ratio
-        const maxWidth = 100 // Limit width for reasonable ASCII output
-        const scale = maxWidth / img.width
-        canvas.width = maxWidth
-        canvas.height = img.height * scale
-
-        // Draw image to canvas
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-        // Get image data
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const pixels = imageData.data
-
-        // Convert to ASCII
-        let ascii = ""
-        const chars = charSets[charSet as keyof typeof charSets]
-
-        for (let y = 0; y < canvas.height; y += density) {
-          for (let x = 0; x < canvas.width; x += density * 0.5) {
-            const idx = (Math.floor(y) * canvas.width + Math.floor(x)) * 4
-            const brightness = (pixels[idx] + pixels[idx + 1] + pixels[idx + 2]) / 3 / 255
-
-            // Map brightness to character
-            const charIndex = inverted
-              ? Math.floor((1 - brightness) * (chars.length - 1))
-              : Math.floor(brightness * (chars.length - 1))
-
-            ascii += chars[charIndex]
-          }
-          ascii += "\n"
-        }
-
-        setAsciiOutput(ascii)
-        setImagePreview(event.target?.result as string)
+        console.log('Image loaded successfully')
+        const imageData = event.target?.result as string
+        setLastUploadedImage(imageData)
+        setImagePreview(imageData)
+        convertImageToAscii(img)
       }
       img.src = event.target?.result as string
     }
     reader.readAsDataURL(file)
+  }
+
+  const convertImageToAscii = (img: HTMLImageElement) => {
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    const maxWidth = 100
+    const scale = maxWidth / img.width
+    canvas.width = maxWidth
+    canvas.height = img.height * scale
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const pixels = imageData.data
+
+    let ascii = ""
+    const chars = charSets[charSet as keyof typeof charSets]
+
+    for (let y = 0; y < canvas.height; y += density) {
+      for (let x = 0; x < canvas.width; x += density * 0.5) {
+        const idx = (Math.floor(y) * canvas.width + Math.floor(x)) * 4
+        const brightness = (pixels[idx] + pixels[idx + 1] + pixels[idx + 2]) / 3 / 255
+
+        const charIndex = inverted
+          ? Math.floor((1 - brightness) * (chars.length - 1))
+          : Math.floor(brightness * (chars.length - 1))
+
+        ascii += chars[charIndex]
+      }
+      ascii += "\n"
+    }
+
+    setAsciiOutput(ascii)
+  }
+
+  const handleRebuild = () => {
+    console.log('Rebuild clicked, lastUploadedImage:', !!lastUploadedImage)
+    if (lastUploadedImage) {
+      const img = new window.Image()
+      img.crossOrigin = "anonymous"
+      img.onload = () => {
+        console.log('Image reloaded for rebuild')
+        convertImageToAscii(img)
+      }
+      img.src = lastUploadedImage
+    }
   }
 
   const handleCopy = () => {
@@ -204,26 +224,21 @@ export default function AsciiGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      {/* Background decorative elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-purple-500/10 blur-[120px]" />
-        <div className="absolute top-[20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-pink-500/10 blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[20%] w-[60%] h-[60%] rounded-full bg-purple-600/10 blur-[120px]" />
-        <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-pink-600/10 blur-[120px]" />
-      </div>
-      
+    <div className="min-h-screen relative overflow-auto">
+      {/* Background gradient with blur */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/30 via-pink-500/20 to-orange-500/30 blur-3xl -z-10" />
       <div className="relative min-h-screen flex flex-col">
-        <header className="border-b border-gray-800/10 p-4 min-h-[72px] flex items-center backdrop-blur-sm bg-black/40 sticky top-0 z-50">
+        <header className="border-b border-gray-800/30 p-4 min-h-[72px] flex items-center backdrop-blur-xl bg-gradient-to-r from-gray-950/40 via-gray-900/40 to-gray-950/40 sticky top-0 z-50 shadow-lg shadow-purple-500/5">
           <div className="container mx-auto flex justify-between items-center">
             <button
               onClick={resetState}
-              className="relative text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient hover:scale-105 transition-all duration-300 hover:opacity-80 active:scale-95 overflow-hidden group px-4 py-2 rounded-xl border border-transparent hover:border-purple-500/20 cursor-pointer [background-size:200%_auto]"
+              className="relative text-3xl font-bold px-4 py-2 rounded-xl cursor-pointer overflow-hidden group bg-gray-900/30 backdrop-blur-sm"
             >
-              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400">vibescii</span>
+              <span className="relative z-10 inline-block bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent animate-gradient-x bg-[length:200%_auto]">
+                vibescii
+              </span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out rounded-xl" />
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out rounded-xl" />
             </button>
             <Sheet onOpenChange={(open) => {
               if (open) setHasOpenedSettings(true)
@@ -253,15 +268,26 @@ export default function AsciiGenerator() {
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
                     <Label htmlFor="density" className="text-white">Density</Label>
-                    <Slider
-                      id="density"
-                      min={0.5}
-                      max={3}
-                      step={0.1}
-                      value={[density]}
-                      onValueChange={(value) => setDensity(value[0])}
-                    />
-                    <div className="text-xs text-gray-300">{density.toFixed(1)} (Lower = More detail)</div>
+                    <div className="relative">
+                      <Slider
+                        id="density"
+                        min={0.5}
+                        max={3}
+                        step={0.1}
+                        value={[density]}
+                        onValueChange={(value) => setDensity(value[0])}
+                        className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 [&_[role=slider]]:border-2 [&_[role=slider]]:border-purple-500 [&_[role=slider]]:bg-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:transition-all [&_[role=slider]]:duration-200 [&_[role=slider]]:hover:scale-110 [&_[role=slider]]:hover:border-pink-500 [&_[role=slider]]:focus:ring-2 [&_[role=slider]]:focus:ring-purple-500/50 [&_[role=slider]]:focus:ring-offset-2 [&_[role=slider]]:focus:ring-offset-gray-950 [&_[role=slider]]:focus:outline-none [&_[role=slider]]:focus:border-pink-500 [&_[role=slider]]:active:scale-95"
+                      />
+                      <div 
+                        className="absolute h-1.5 top-1/2 -translate-y-1/2 left-0 right-0 rounded-full bg-gradient-to-r from-purple-500/50 via-pink-500/50 to-purple-500/50"
+                        style={{ width: `${((density - 0.5) / 2.5) * 100}%` }}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-300 flex justify-between items-center">
+                      <span>More detail</span>
+                      <span className="font-medium text-purple-400">{density.toFixed(1)}</span>
+                      <span>Less detail</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -275,12 +301,12 @@ export default function AsciiGenerator() {
                       <SelectTrigger id="charset" className="text-white">
                         <SelectValue placeholder="Select character set" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="detailed">Detailed</SelectItem>
-                        <SelectItem value="simple">Simple</SelectItem>
-                        <SelectItem value="blocks">Blocks</SelectItem>
-                        <SelectItem value="binary">Binary</SelectItem>
+                      <SelectContent className="bg-gray-950 border-gray-800 text-white">
+                        <SelectItem value="standard" className="text-white hover:bg-purple-500/20">Standard</SelectItem>
+                        <SelectItem value="detailed" className="text-white hover:bg-purple-500/20">Detailed</SelectItem>
+                        <SelectItem value="simple" className="text-white hover:bg-purple-500/20">Simple</SelectItem>
+                        <SelectItem value="blocks" className="text-white hover:bg-purple-500/20">Blocks</SelectItem>
+                        <SelectItem value="binary" className="text-white hover:bg-purple-500/20">Binary</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -377,30 +403,34 @@ export default function AsciiGenerator() {
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center min-h-[32px]">
-                      <Label htmlFor="output-ascii-image">ASCII Output</Label>
-                      <div className="space-x-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={handleCopy} 
-                          disabled={!asciiOutput}
-                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                        >
-                          <Copy className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                          Copy
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={handleDownload} 
-                          disabled={!asciiOutput}
-                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/20 hover:bg-purple-500/20 hover:border-purple-500/30 transition-all duration-300 group"
-                        >
-                          <Download className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
-                          Download
-                        </Button>
+                  {imagePreview && (
+                    <div className="space-y-4">
+                      <Button
+                        onClick={handleRebuild}
+                        className="relative w-full bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 group overflow-hidden rounded-xl border border-transparent hover:border-purple-500/20 active:scale-95"
+                      >
+                        <span className="relative z-10">
+                          Rebuild ASCII Art
+                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300 group-hover:w-full" />
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-x-[100%] group-hover:translate-x-[-100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 rotate-45 translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-1000 ease-out" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-pink-500/30 to-purple-500/0 -rotate-45 translate-y-[100%] group-hover:translate-y-[-100%] transition-transform duration-1000 ease-out" />
+                      </Button>
+                      <div className="relative w-full aspect-video">
+                        <Image
+                          src={imagePreview}
+                          alt="Preview"
+                          fill
+                          className="object-contain"
+                          priority
+                        />
                       </div>
                     </div>
                     <Textarea
@@ -503,4 +533,3 @@ export default function AsciiGenerator() {
     </div>
   )
 }
-
