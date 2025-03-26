@@ -267,12 +267,12 @@ export default function AsciiGenerator() {
                       <SelectTrigger id="charset" className="text-white">
                         <SelectValue placeholder="Select character set" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="detailed">Detailed</SelectItem>
-                        <SelectItem value="simple">Simple</SelectItem>
-                        <SelectItem value="blocks">Blocks</SelectItem>
-                        <SelectItem value="binary">Binary</SelectItem>
+                      <SelectContent className="bg-gray-950 border-gray-800 text-white">
+                        <SelectItem value="standard" className="text-white hover:bg-purple-500/20">Standard</SelectItem>
+                        <SelectItem value="detailed" className="text-white hover:bg-purple-500/20">Detailed</SelectItem>
+                        <SelectItem value="simple" className="text-white hover:bg-purple-500/20">Simple</SelectItem>
+                        <SelectItem value="blocks" className="text-white hover:bg-purple-500/20">Blocks</SelectItem>
+                        <SelectItem value="binary" className="text-white hover:bg-purple-500/20">Binary</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
