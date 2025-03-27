@@ -97,6 +97,13 @@ export const asciiPatterns: { [key: string]: string[] } = {
     "N  NN",
     "N   N"
   ],
+  'ñ': [
+    "~~~~~",
+    "NN  N",
+    "N N N",
+    "N  NN",
+    "N   N"
+  ],
   'o': [
     " OOO ",
     "O   O",
