@@ -2,8 +2,6 @@
 
 A modern, elegant ASCII art generator built with Next.js and TypeScript. Transform your text and images into beautiful ASCII art with a sleek, dark-themed interface.
 
-This project is fully vibe coded w/ Cursor.
-
 <div align="center">
 
 ```
@@ -78,7 +76,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - Inspired by the classic ASCII art generators
 - Built with modern web technologies for the best user experience
 - Special thanks to all contributors and users
-
----
-
-Made with ❤️ by Javier Santos & Darío Rodríguez
